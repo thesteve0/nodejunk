@@ -11,6 +11,18 @@ zcache['index.html'] = fs.readFileSync('./index.html'); //  Cache index.html
 // Create "express" server.
 var app  = express.createServer();
 
+//These are default
+var express = require('express');
+var fs = require('fs');
+// Adding these for mongoDB
+var Db = require('mongodb').Db,
+  Server = require('mongodb').Server,
+  Connection = require('mongodb').Connection,
+  ObjectID = require('mongodb').ObjectID;
+
+  var db = new Db('todolist', new Server(process.env.OPENSHIFT_NOSQL_DB_HOST, process.env.OPENSHIFT_NOSQL_DB_PORT, {auto_reconnect: true
+}));
+
 
 /*  =====================================================================  */
 /*  Setup route handlers.  */
@@ -29,7 +41,10 @@ app.get('/asciimo', function(req, res){
 
 // Handler for GET /
 app.get('/', function(req, res){
-    res.send(zcache['index.html'], {'Content-Type': 'text/html'});
+		db.collection('names').find().toArray(function(err, names) {
+				res.header("Content-Type:","text/json");
+				res.end(JSON.stringify(names));
+		});
 });
 
 
@@ -61,8 +76,13 @@ process.on('exit', function() { terminator(); });
 });
 
 //  And start the app on that interface (and port).
-app.listen(port, ipaddr, function() {
-   console.log('%s: Node server started on %s:%d ...', Date(Date.now() ),
-               ipaddr, port);
+db.open(function(err, db) {
+  if(err) {throw err}
+	db.authenticate(process.env.OPENSHIFT_NOSQL_DB_USERNAME,process.env.OPENSHIFT_NOSQL_DB_PASSWORD,function(err){
+	if(err) throw err
+	app.listen(port, ipaddr, function() {
+	   console.log('%s: Node server started on %s:%d ...', Date(Date.now() ),
+				   ipaddr, port);
+	});
 });
 
