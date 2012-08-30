@@ -76,6 +76,18 @@ process.on('exit', function() { terminator(); });
 });
 
 //  And start the app on that interface (and port).
+
+// And start the app on that interface (and port).
+/*
+db.open(function(err, db) {
+  if(err) {throw err}
+  db.authenticate("admin","z4EuJ8qYFdsN",function(err){
+  		  if(err) throw err
+  		  app.listen(port,ipaddr);
+  });
+});
+*/
+
 db.open(function(err, db) {
   if(err) {throw err}
 	db.authenticate(process.env.OPENSHIFT_NOSQL_DB_USERNAME,process.env.OPENSHIFT_NOSQL_DB_PASSWORD,function(err){
@@ -85,4 +97,3 @@ db.open(function(err, db) {
 				   ipaddr, port);
 	});
 });
-
