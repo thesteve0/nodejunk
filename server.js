@@ -20,7 +20,7 @@ var Db = require('mongodb').Db,
   Connection = require('mongodb').Connection,
   ObjectID = require('mongodb').ObjectID;
 
-  var db = new Db('todolist', new Server(process.env.OPENSHIFT_NOSQL_DB_HOST, parseInt(process.env.OPENSHIFT_NOSQL_DB_PORT), {auto_reconnect: true
+  var db = new Db('todolist', new Server(process.env.OPENSHIFT_NOSQL_DB_HOST, 27017, {auto_reconnect: true
 }));
 
 
